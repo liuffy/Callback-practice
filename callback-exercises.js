@@ -122,13 +122,71 @@ class Clock {
 
 // absurdBubbleSort
 //
-// In this exercise, we write a method called absurdBubbleSort(arr, sortCompletionCallback).
-// Instead of using the traditional >, we'll prompt the user to perform each comparison for
-// us.
+// Write this first.
+function askIfGreaterThan(el1, el2, callback) {
+  // Prompt user to tell us whether el1 > el2; pass true back to the
+  // callback if true; else false.
 
-// >> Read Readme file
+  reader.question(`Is ${el1} greater than ${el2}?`, function(answer){
+    if (answer === "yes"){
+      callback(true);
+    } else {
+      callback(false);
+    }
+  });
+}
+// Next, write a method innerBubbleSortLoop(arr, i, madeAnySwaps, outerBubbleSortLoop).
+// This recursive function should:
+  // If i < arr.length - 1, it should call askIfGreaterThan, asking the user to compare arr[i] and arr[i + 1].
+  // For a callback to askIfGreaterThan, pass in an anonymous helper function. This should:
+  // Take in a single argument: isGreaterThan; askIfGreaterThan will pass either true or false as this argument.
+  // Perform a swap of elements in the array if necessary.
+  // Call innerBubbleSortLoop again, this time for i + 1. It should pass madeAnySwaps. Update madeAnySwaps if you did swap.
+  // Call outerBubbleSortLoop if i == (arr.length - 1). It should receive madeAnySwaps as an argument.
+  function innerBubbleSortLoop(arr, i, madeAnySwaps, outerBubbleSortLoop) {
+    if (i === arr.length - 1){
+      outerBubbleSortLoop(madeAnySwaps); // at the end of the array, if we've made any swaps, we'll
+      // (madeAnySwaps = true) either restart the innerloop;
+      // (madeAnySwaps = false) OR we'll call the completionCallback and yield the result
+    } else { // anywhere else in the array
+        askIfGreaterThan(arr[i], arr[i+1], function(isGreaterThan){
+        // isGreaterthan will pass either true or false from the
+        if (isGreaterThan){ // if true
+          const actualBigger = arr[i]; // swap
+          arr[i] = arr[i + 1]; // set el1 as the smaller variable
+          arr[i+1] = actualBigger; // set el2 as the earlier variable
+
+          madeAnySwaps = true; // a swap has been made
+        }
+          innerBubbleSortLoop(arr, i + 1, madeAnySwaps, outerBubbleSortLoop);
+        });
+      };
+}
+
+// Once you're done testing innerBubbleSortLoop, write outerBubbleSortLoop.
+// Once you're done testing outerBubbleSortLoop, write absurdBubbleSort.
+
+function absurdBubbleSort(arr, sortCompletionCallback) {
+  function outerBubbleSortLoop(madeAnySwaps) {
+    // Begin an inner loop if you made any swaps. Otherwise, call
+    // `sortCompletionCallback`.
+    if (madeAnySwaps){ // restart for another round
+        innerBubbleSortLoop(arr, 0, false, outerBubbleSortLoop)
+    } else{
+      sortCompletionCallback(arr);
+      reader.close();
+    }
+  }
+  // Kick the first outer loop off, starting `madeAnySwaps` as true.
+  outerBubbleSortLoop(true);
+}
 
 
+// Test it out
+absurdBubbleSort([2,5,3,7,6,9,1], function (arr) {
+  console.log("Sorted array: " + JSON.stringify(arr));
+  reader.close();
+});
 
 
 
