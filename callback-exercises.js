@@ -202,7 +202,7 @@ function absurdBubbleSort(arr, sortCompletionCallback) {
 Function.prototype.myBind = function (context){
   // Return an arrow function.
   // The arrow function captures this and context.
-  return () => this.apply(context) // apply is one of many ways to apply functions
+  return () => this.apply(context); // apply is one of many ways to apply functions
 }
 // How would you test your "bind" method out? Try out this example code:
 
