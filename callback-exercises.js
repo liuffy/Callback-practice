@@ -183,41 +183,45 @@ function absurdBubbleSort(arr, sortCompletionCallback) {
 
 
 // Test it out
-absurdBubbleSort([2,5,3,7,6,9,1], function (arr) {
-  console.log("Sorted array: " + JSON.stringify(arr));
-  reader.close();
-});
-
+// absurdBubbleSort([2,5,3,7,6,9,1], function (arr) {
+//   console.log("Sorted array: " + JSON.stringify(arr));
+//   reader.close();
+// });
+//
 
 
 // Function Calling
 //
 // Write your own myBind(context) method. Add it to Function.prototype. You'll want to:
 //
-// Return an arrow function.
-// The arrow function captures this and context.
 // In the anonymous function, call Function.prototype.apply on this, passing the context.
 // Assume the method you're binding doesn't take any arguments; we'll see tomorrow how to
 // use the rest and spread operators to fix this.
-//
+
+
+Function.prototype.myBind = function (context){
+  // Return an arrow function.
+  // The arrow function captures this and context.
+  return () => this.apply(context) // apply is one of many ways to apply functions
+}
 // How would you test your "bind" method out? Try out this example code:
-//
-// class Lamp {
-//   constructor() {
-//     this.name = "a lamp";
-//   }
-// }
-//
-// const turnOn = function() {
-//    console.log("Turning on " + this.name);
-// }
-//
-// const lamp = new Lamp();
-//
-// turnOn(); // should not work the way we want it to
-//
-// const boundTurnOn = turnOn.bind(lamp);
-// const myBoundTurnOn = turnOn.myBind(lamp);
-//
-// boundTurnOn(); // should say "Turning on a lamp"
-// myBoundTurnOn(); // should say "Turning on a lamp"
+
+class Lamp {
+  constructor() {
+    this.name = "a lamp";
+  }
+}
+
+const turnOn = function() {
+   console.log("Turning on " + this.name);
+}
+
+const lamp = new Lamp();
+
+turnOn(); // should not work the way we want it to
+
+const boundTurnOn = turnOn.bind(lamp);
+const myBoundTurnOn = turnOn.myBind(lamp);
+
+boundTurnOn(); // should say "Turning on a lamp"
+myBoundTurnOn(); // should say "Turning on a lamp"
