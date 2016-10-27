@@ -1,23 +1,22 @@
 
-Board.marks = ['x','o'];
-
 class Board {
   constructor(){
     this.grid = Board.makeGrid();
   }
 
   isEmptyPos(pos){
-    return (this.grid[pos[0]][pos[1]] === null);
+    if (!Board.grid[pos[0]][pos[1]]){
+     throw new Error ('error at EmptyPos!');
+    }
+    return (this.grid[pos[0]][pos[1]] === null); // issue here
   }
 
   isOver(){
-    if (this.winner != null){
-      return true;
-    }
+    return (this.winner != null);
     // If there's no winner, we'll have to go row by row and check if there are any missing spaces
-    for (let i = 0; i < 3; i++){
-      for (let j = 0 ; j <3, j++){
-        if (this.isEmptyPos(pos)){
+    for (let rowIdx = 0; rowIdx < 3; rowIdx++){
+      for (let colIdx = 0 ; colIdx <3; colIdx++){
+        if (this.isEmptyPos([rowIdx,colIdx])){
           return false;
         }
       }
@@ -25,29 +24,28 @@ class Board {
     return true;
   }
 
-  placeMark(pos, mark){
-    if (!this.isValidPos(pos)){
-      throw new error ('Invalid move!!!');
-    } else {
-      this.grid[pos[0]][pos[1]] = mark;
-    }
+  placeMark(pos, mark) {
+  if (!this.isEmptyPos(pos)) {
+    throw new Error ('Is not an empty position!');
   }
 
+  this.grid[pos[0]][pos[1]] = mark;
+}
+
   print(){
-    for (var rowIdx = 0; rowIdx  <3 ; rowIdx ++){
+    const strings = [];
+    for (let rowIdx = 0; rowIdx < 3 ; rowIdx ++){
       const marks = [];
-      for (var colIdx = 0; colIdx < 3 ; colIdx ++){
-        const strings = [];
-        marks.push(
-          this.grid[rowIdx][colIdx] ? this.grid[rowIdx][colIdx] : "_");
+      for (let colIdx = 0; colIdx < 3 ; colIdx ++){
+        marks.push(this.grid[rowIdx][colIdx] ? this.grid[rowIdx][colIdx] : "   ");
       } // Now you have something like this: ['x', 'x', 'o','x','o','x','o','x','o']
-        strings.push(`${marks.join("|")} \n`);
+        strings.push(`${marks.join("|")} \n`); // will push every 3 marks into strings with newline appended at end
     }
     console.log(strings.join('--------------\n'))
 
   }
 
-  winner(){ // returns winning mark or null 
+  winner(){ // returns winning mark or null
     const winningSeqs = [
       // Horizontal wins
       [[0,0],[0,1],[0,2]], // winningSeq 1
@@ -65,15 +63,14 @@ class Board {
 
     for (var i = 0; i < winningSeqs.length; i++){ // go through every winning sequence
       const winner = this.winnerHelper(winningSeqs[i]);
-      if (winnerHelper(winningSeqs[i])){ // if winnerHelper returns truthy
+      if (this.winnerHelper(winningSeqs[i])){ // if winnerHelper returns truthy
         return winner;
       }
     }
     return null;
-    }
   }
 
-  winnerHelper(winningSeq){ // this compares the board against the winning sequence, looking for 3 in a row of
+  winnerHelper(winningSeq){// this compares the board against the winning sequence, looking for 3 in a row of
     // the SAME mark (it checks for the presence of the expected mark)
     // ex: [[2,0],[1,1],[0,2]] Is there a X at 2,0? Is there a X at 1,1? Is there an X at 0,2?
     for (let markIdx = 0; markIdx < Board.marks.length; markIdx++){
@@ -94,8 +91,9 @@ class Board {
     return null;
   }
 
+
   static isValidPos(pos){ // good
-    return ((pos[0] >= 0) && (pos[0] < 3) && (pos[1] < 3) && (pos[1] < 3)); // everything is in bounds
+    return (pos[0] >= 0) && (pos[0] < 3) && (pos[1] >=0) && (pos[1] < 3); // everything is in bounds
   }
 
   static makeGrid(){ // good
@@ -103,9 +101,13 @@ class Board {
     for(let i =0; i < 3; i++){
       let row = new Array(3);
       grid.push(row);
+      row.fill(null)
     }
+    return grid;
   }
 // End of functions
 }
 
 module.exports = Board;
+
+Board.marks = ['x','o'];
