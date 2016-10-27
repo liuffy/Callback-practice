@@ -1,7 +1,7 @@
 
 class Game {
   constructor(){
-
+    
   }
 
   promptMove(reader, callback){
